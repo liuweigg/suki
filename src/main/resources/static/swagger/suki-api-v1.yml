@@ -1,0 +1,153 @@
+---
+swagger: "2.0"
+
+info:
+  version: v1
+  title: 保单微服务
+  description: 保单微服务
+
+basePath: /api/v1
+schemes:
+- http
+produces:
+- application/json
+consumes:
+- application/json
+
+tags:
+- name: followup
+  description: 保单附加跟进信息
+
+# security
+
+# parameters:
+
+paths:
+  /followup/{branchId}/{policyId}:
+    get:
+      tags:
+      - followup
+      summary: 按分公司及保单号查询保单附加跟进信息
+      description: 返回多笔保单附加跟进信息。测试数据：分公司号[1]，保单号[01200941]或[H0745219]。
+      operationId: getFollowup
+      parameters:
+      - name: branchId
+        in: path
+        description: 保单所属分公司编号
+        required: true
+        type: string
+      - name: policyId
+        in: path
+        description: 保单号
+        required: true
+        type: string
+      responses:
+        200:
+          description: 查询成功
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Followup"
+        default:
+          description: 其他错误
+          schema:
+            $ref: "#/definitions/Response"
+
+definitions:
+  Followup:
+    type: object
+    description: 保单附加跟进信息
+    properties:
+      branchId:
+        type: string
+        description: 分公司编号
+        example: "1"
+      policyId:
+        type: string
+        description: 保单号
+        example: "01200101"
+      seq:
+        type: integer
+        format: int64
+        description: 跟进序号
+      code:
+        $ref: "#/definitions/CodeName"
+        #以下字段在 http://editor.swagger.io 会警告，但是在 swagger-ui 中能正常显式，应该保留给用户提示。
+        description: 跟进代码
+        example: '{code:401,name:特别约定}'
+      type:
+        $ref: "#/definitions/CodeName"
+        description: 跟进类型
+        example: '{code:P,name:建议书}'
+      followupDate:
+        type: string
+        format: date
+        description: 跟进日期
+      remark:
+        type: string
+        description: 跟进备注
+        example: 特别约定
+      status:
+        $ref: "#/definitions/CodeName"
+        description: 跟进状态
+        example: '{code:0,name:}'
+      insuredNo:
+        type: string
+        description: 保单内被保人编号
+        example: "01"
+      jointNo:
+        type: string
+        description: 保单内连生人编号
+        example: "00"
+      transactionNo:
+        type: integer
+        format: int64
+        description: 交易号？
+      transactionDateTime:
+        type: string
+        format: date-time
+        description: 交易日期及时间
+      claimId:
+        type: string
+        description: 理赔编号
+        example: "?"
+      letterType:
+        $ref: "#/definitions/CodeName"
+        description: 信函种类
+        example: '{code:SZ00004,name:}'
+      autoFollow:
+        type: boolean
+        description: 是否自动跟进
+      specialClause:
+        type: string
+        description: 特别约定说明
+      userCode:
+        type: string
+        description: 用户编号
+        example: L1NBXQS
+
+  #TODO：以下通用数据内容考虑挪至独立的 yml 或 project trolls-common。
+  CodeName:
+    type: object
+    description: 编码
+    properties:
+      code:
+        type: string
+        description: 编码
+        example: Female
+      name:
+        type: string
+        description: 名称
+        example: 女
+  Response:
+    type: object
+    description: 出错时返回提示
+    properties:
+      traceId:
+        type: string
+        description: 跟踪号
+        example: 9c0accee225d7074
+      message:
+        type: string
+        description: 提示消息
+        example: 系统错误

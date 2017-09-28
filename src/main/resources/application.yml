@@ -1,0 +1,13 @@
+info.description: @project.description@
+info.ref: @project.url@
+
+security.basic.enabled: false
+spring.datasource.initialize: false
+spring.jpa.hibernate.ddl-auto: none
+
+---
+spring.profiles: development
+logging.level:
+    com.ccs.trolls.suki: DEBUG
+spring.datasource.initialize: true
+
